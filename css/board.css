@@ -1,0 +1,13 @@
+.board {
+	padding: 0;
+	border-spacing: 0;
+	border: 0;
+}
+.tableBlack {
+	background-color: black;
+	width: 10px;
+}
+.tableWhite {
+	background-color: white;
+	width: 50px;
+}
