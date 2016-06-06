@@ -1,2 +1,2 @@
 # QuantumChess
-a variant game of chess with the power of quantum mechanics
+a variant of chess game with the power of quantum mechanics
