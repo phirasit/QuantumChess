@@ -13,16 +13,21 @@ table.board {
 
 /* each square in board */
 td.square:hover {
+	color: black;
 	background-color: lightgray;
 }
+
 td.squareBlack {
 	color: white;
 	background-color: black;
-	width: 10px;
 }
 td.squareWhite {
 	background-color: white;
-	width: 50px;
+}
+
+/* clicked square */
+td.clicked {
+	background-color: green;
 }
 
 /* board game div */
@@ -36,48 +41,4 @@ div#board_div {
 	float: left;
 
 	padding: 20px;
-}
-
-/* tools box */
-div#tools_div {
-
-	position: relative;
-
-	float: right;	
-	width: 200px;
-
-	padding: 20px;
-
-	-moz-border-radius: 3em;
-	-webkit-border-radius: 3em;
-
-	background-color: red;
-
-}
-
-div#history {
-
-	position: absolute;
-	top: 20px;
-
-	align-self: center;
-
-	background-color: white;
-	height: 45%;
-	width: 200px;
-
-	-moz-border-radius: 3em;
-	-webkit-border-radius: 3em;
-}
-div#detail {
-
-	position: absolute;
-	bottom: 20px;
-
-	background-color: white;
-	height: 45%;
-	width: 200px;
-
-	-moz-border-radius: 3em;
-	-webkit-border-radius: 3em;
 }

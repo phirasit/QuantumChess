@@ -10,14 +10,6 @@
 		<div id = "board_game">
 
 			<div id = "board_div"> </div>
-			
-
-			<div id = "tools_div"> 
-
-				<div id = "history"></div>
-				<br>
-				<div id = "detail"></div>
-			</div>
 
 		</div>
 	</body>
@@ -25,12 +17,36 @@
 </html>
 
 <script type="text/javascript" src="js/board.js"></script>
+<script type="text/javascript" src="js/game.js"></script>
+<script type="text/javascript" src="js/io.js"></script>
+
 <script type="text/javascript">
 
-	const board_name = "main_game";
 
-	// onload
-	document.getElementById( "board_div" ).innerHTML = drawBoard( board_name );
+	// set constants
+	const board_width = 8;
+	const board_height = 8;
+	const board_name = "MainGame";
+
+	var game = {
+		// name
+		name: board_name,
+		// height
+		height: board_height,
+		// width
+		width: board_width,
+		// set turn
+		turn: true,
+		// set position
+		position: []
+	};
+
+
+	var board_div = document.getElementById( "board_div" );
+
+	// show table
+	board_div.innerHTML = drawBoard( game );
+
 
 	// gather all details
 	var board = document.getElementById( getBoardId ( board_name ) );
@@ -40,34 +56,41 @@
 		rows.push( document.getElementById( getRowId( board_name, i ) ) );
 	}
 
+	// init function
+	init( game );
+	display( game );
+
 	// onload and onresize
-
-	var board_div = document.getElementById( "board_div" );
-	var tools_div = document.getElementById( "tools_div" );
-
 	window.onresize = function() { 
 
 		const buffer = 100;
 
-		const width = window.innerWidth - document.getElementById( "tools_div" ).clientWidth - buffer;
+		const width = window.innerWidth - buffer;
 		board_div.setAttribute( "style", "width: " + width + "px;" );
 
 		changeBoardSize( board, rows, board_div.clientWidth , window.innerHeight ); 
 
 		const height = board.clientHeight;
-		tools_div.setAttribute ( "style", "height: " + height + "px;" );
 	};
+
 
 	// also change board's size when window is loaded
 	window.onresize();
 
-</script>
+	// disable right-click context menu
+	document.body.oncontextmenu = function() { return false; }
 
-<script type="text/javascript" src="js/game.js"></script>
+	// right click - undo
+	document.body.onmousedown = function( event ) {
+		if ( event.button == 2 ) { // right mouse
 
-<script type="text/javascript" src="js/io.js"></script>
-<script type="text/javascript">
+			event.cancelBubble = true;
 
-	display( "main_game" );
+			undoSelection();
+			display( game );
+		}
+	}
+
+
 
 </script>

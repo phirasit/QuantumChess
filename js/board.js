@@ -1,38 +1,22 @@
-
-// set constants
-const board_width = 8;
-const board_height = 8;
-const color = [ "BLACK", "WHITE" ];
-
-function getBoardId ( tag_name ) {
-	return tag_name + "_board";
-}
-function getRowId ( tag_name, i ) {
-	return tag_name + "_row" + i;
-}
-function getSquareId ( tag_name, i, j ) {
-	return tag_name + "_square" + i + j;
-}
 // draw a simple chess board
-function drawBoard( tag_name ) {
+function drawBoard( game ) {
 
 	var board_text = "";
 	board_text += "<table \
-		id=\"" + getBoardId( tag_name ) + "\"\
+		id=\"" + getBoardId( game.name ) + "\"\
 		class=\"board\" \
 		>";
 
 	var i, j;
-	for ( i = 1 ; i <= board_height ; i++ ) {
+	for ( i = 1 ; i <= game.height ; i++ ) {
 		board_text += "<tr\
-			id=\"" + getRowId( tag_name, i ) + "\"\
+			id=\"" + getRowId( game.name, i ) + "\"\
 		>";
-		for ( j = 1 ; j <= board_width ; j++ ) {
+		for ( j = 1 ; j <= game.width ; j++ ) {
 			board_text += "<td \
-				id=\"" + getSquareId( tag_name, i, j ) + "\"\
-				class=\"square square" + color[ ( i + j ) % 2 ] + "\" \
-				onmouseover = \"MouseOver(this)\" \
-				onclick = \"Select(this)\" \
+				id=\"" + getSquareId( game.name, i, j ) + "\"\
+				onmouseover = \"squareOnMouseOver(this)\" \
+				onclick = \"squareOnMouseClick(this)\" \
 				></td>";
 
 		}
