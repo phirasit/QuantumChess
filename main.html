@@ -5,86 +5,69 @@
 		<title> Quantum Chess </title>
 	</head>
 
-	<body onresize="ChangeBoardSize()">
-		<!-- Board --> 
-		<div id ="board_div"> </div>
+	<body>
+		<!-- Board and Tools --> 
+		<div id = "board_game">
 
-		<!-- Info -->
+			<div id = "board_div"> </div>
+			
 
+			<div id = "tools_div"> 
+
+				<div id = "history"></div>
+				<br>
+				<div id = "detail"></div>
+			</div>
+
+		</div>
 	</body>
 
 </html>
 
+<script type="text/javascript" src="js/board.js"></script>
 <script type="text/javascript">
 
-	const board_width = 8;
-	const board_height = 8;
-	const color = [ "BLACK", "WHITE" ];
-	
-	// draw a simple chess board
-	function DrawBoard() {
-
-		var board = document.getElementById( "board_div" );
-
-		var board_text = "";
-		board_text += "<table \
-			id=\"board\" \
-			class=\"board\" \
-			align=\"center\" \
-			>";
-
-		var i, j;
-		for ( i = 1 ; i <= board_height ; i++ ) {
-			board_text += "<tr\
-				id=\"row" + i +"\"\
-			>";
-			for ( j = 1 ; j <= board_width ; j++ ) {
-				board_text += "<td \
-					id=\"square" + i + j + "\"\
-					class=\"table" + color[ ( i + j ) % 2 ] + "\"> \
-					</td>";
-			}
-			board_text += "</tr>";
-		}
-
-		board_text += "</table>";
-
-		board.innerHTML = board_text;
-	}
-
-	// change the height of the squares according to their width
-	function ChangeBoardSize() {
-
-		const window_buffer = 50;
-
-		// get the width 
-		var board_size = 0.8 * document.body.clientWidth;
-		board_size = Math.min( board_size, window.innerWidth - window_buffer );
-		board_size = Math.min( board_size, window.innerHeight - window_buffer );
-
-		console.log( board_size );
-	
-		const height = board_size / board_height;
-		const width = board_size / board_width;
-
-		// set width
-		document.getElementById( "board" ).setAttribute( "width", width * board_width+ "px" );
-		document.getElementById( "board" ).style.width = width * board_width + "px";
-
-		var i, j;
-		for ( i = 1 ; i <= board_height ; i++ ) {
-
-			var row_id = "row" + i;
-			var row = document.getElementById( row_id );
-
-			// set new height
-			row.setAttribute( "height", height + "px" );
-			row.style.height = height + "px";
-		}
-	}
+	const board_name = "main_game";
 
 	// onload
-	DrawBoard();
-	ChangeBoardSize();
+	document.getElementById( "board_div" ).innerHTML = drawBoard( board_name );
+
+	// gather all details
+	var board = document.getElementById( getBoardId ( board_name ) );
+	var rows = [];
+	var i;
+	for ( i = 1 ; i <= board_height ; i++ ) {
+		rows.push( document.getElementById( getRowId( board_name, i ) ) );
+	}
+
+	// onload and onresize
+
+	var board_div = document.getElementById( "board_div" );
+	var tools_div = document.getElementById( "tools_div" );
+
+	window.onresize = function() { 
+
+		const buffer = 100;
+
+		const width = window.innerWidth - document.getElementById( "tools_div" ).clientWidth - buffer;
+		board_div.setAttribute( "style", "width: " + width + "px;" );
+
+		changeBoardSize( board, rows, board_div.clientWidth , window.innerHeight ); 
+
+		const height = board.clientHeight;
+		tools_div.setAttribute ( "style", "height: " + height + "px;" );
+	};
+
+	// also change board's size when window is loaded
+	window.onresize();
+
+</script>
+
+<script type="text/javascript" src="js/game.js"></script>
+
+<script type="text/javascript" src="js/io.js"></script>
+<script type="text/javascript">
+
+	display( "main_game" );
 
 </script>

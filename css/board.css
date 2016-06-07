@@ -1,13 +1,83 @@
-.board {
+/* the board */
+table.board {
 	padding: 0;
 	border-spacing: 0;
 	border: 0;
+
+	
+	margin-left: auto; 
+    margin-right: auto;
+
+	text-align: center;
 }
-.tableBlack {
+
+/* each square in board */
+td.square:hover {
+	background-color: lightgray;
+}
+td.squareBlack {
+	color: white;
 	background-color: black;
 	width: 10px;
 }
-.tableWhite {
+td.squareWhite {
 	background-color: white;
 	width: 50px;
+}
+
+/* board game div */
+div#board_game {
+	overflow: hidden;
+	width: 100%;
+}
+
+/* div that covers board */
+div#board_div {
+	float: left;
+
+	padding: 20px;
+}
+
+/* tools box */
+div#tools_div {
+
+	position: relative;
+
+	float: right;	
+	width: 200px;
+
+	padding: 20px;
+
+	-moz-border-radius: 3em;
+	-webkit-border-radius: 3em;
+
+	background-color: red;
+
+}
+
+div#history {
+
+	position: absolute;
+	top: 20px;
+
+	align-self: center;
+
+	background-color: white;
+	height: 45%;
+	width: 200px;
+
+	-moz-border-radius: 3em;
+	-webkit-border-radius: 3em;
+}
+div#detail {
+
+	position: absolute;
+	bottom: 20px;
+
+	background-color: white;
+	height: 45%;
+	width: 200px;
+
+	-moz-border-radius: 3em;
+	-webkit-border-radius: 3em;
 }
