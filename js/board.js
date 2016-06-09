@@ -15,8 +15,6 @@ function drawBoard( game ) {
 		for ( j = 1 ; j <= game.width ; j++ ) {
 			board_text += "<td \
 				id=\"" + getSquareId( game.name, i, j ) + "\"\
-				onmouseover = \"squareOnMouseOver(this)\" \
-				onclick = \"squareOnMouseClick(this)\" \
 				></td>";
 
 		}

@@ -6,12 +6,14 @@
 	</head>
 
 	<body>
-		<!-- Board and Tools --> 
-		<div id = "board_game">
-
-			<div id = "board_div"> </div>
-
+		<!-- Board --> 
+		<div id="board_game">
+			<div id="board_div"> </div>
 		</div>
+
+		<!-- message -->
+		<div id="msg"></div>
+
 	</body>
 
 </html>
@@ -19,6 +21,7 @@
 <script type="text/javascript" src="js/board.js"></script>
 <script type="text/javascript" src="js/game.js"></script>
 <script type="text/javascript" src="js/io.js"></script>
+<script type="text/javascript" src="js/tree.js"></script>
 
 <script type="text/javascript">
 
@@ -31,14 +34,45 @@
 	var game = {
 		// name
 		name: board_name,
+		
 		// height
 		height: board_height,
+		
 		// width
 		width: board_width,
+		
 		// set turn
 		turn: true,
+
 		// set position
-		position: []
+		position: [],
+
+		// move type
+		moveType: true,
+
+		// prompt function
+		prompt: (function( msg ) {
+			var msgId = document.getElementById( "msg" );
+			msgId.innerText = msg;
+
+			msgId.setAttribute( "style", "opacity: 1;");
+
+			setInterval( (function() {
+				var style = window.getComputedStyle( msgId );
+				var opacity = 0.9 * style.getPropertyValue( "opacity" );
+				msgId.setAttribute( "style", "opacity: " + opacity );
+				if ( opacity < 0.1 ) {
+					clearInterval( this );
+				}
+			}), 150 );
+
+		}),
+
+		// end function
+		end: (function( result = "" ) {
+			alert( result );
+		})
+
 	};
 
 
@@ -51,14 +85,29 @@
 	// gather all details
 	var board = document.getElementById( getBoardId ( board_name ) );
 	var rows = [];
-	var i;
-	for ( i = 1 ; i <= board_height ; i++ ) {
-		rows.push( document.getElementById( getRowId( board_name, i ) ) );
+	var i, j;
+	for ( i = 1 ; i <= game.height ; i++ ) {
+		rows.push( document.getElementById( getRowId( game.name, i ) ) );
 	}
 
 	// init function
 	init( game );
 	display( game );
+
+	for ( i = 1 ; i <= game.height ; i++ ) {
+		for ( j = 1 ; j <= game.width ; j++ ) {
+
+			var square = getSquare( game.name, i, j );
+
+			square.addEventListener( "mouseover", function() {
+				squareOnMouseOver( game, this );
+			});
+
+			square.addEventListener( "click", function() {
+				squareOnMouseClick( game, this );
+			});
+		}
+	}
 
 	// onload and onresize
 	window.onresize = function() { 
@@ -84,10 +133,8 @@
 	document.body.onmousedown = function( event ) {
 		if ( event.button == 2 ) { // right mouse
 
-			event.cancelBubble = true;
-
-			undoSelection();
-			display( game );
+			switchMoveType( game );
+			undoSelection( game );
 		}
 	}
 

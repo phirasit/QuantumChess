@@ -4,10 +4,8 @@ table.board {
 	border-spacing: 0;
 	border: 0;
 
-	
 	margin-left: auto; 
     margin-right: auto;
-
 	text-align: center;
 }
 
@@ -30,15 +28,43 @@ td.clicked {
 	background-color: green;
 }
 
+/* possible move */
+td.possibleMove {
+	border: 1px solid red;
+}
+
 /* board game div */
 div#board_game {
 	overflow: hidden;
 	width: 100%;
+	text-align: center;
 }
 
 /* div that covers board */
 div#board_div {
-	float: left;
+	width: 100%;
+	text-align: center;	
+	margin-left: auto; 
+    margin-right: auto;
+}
 
-	padding: 20px;
+/* message */
+div#msg {
+	position: fixed;
+
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+
+	padding: 10px;
+	text-align: center;
+	color: black;
+
+	right: 10;
+	bottom: 10;
+	width: 200px;
+	height: 30px;
+
+	background-color: rgba( 100, 200, 0, 0.4 );
+
+	opacity: 0;
 }
