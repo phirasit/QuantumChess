@@ -44,6 +44,9 @@ function squareOnMouseClick( game, square ) {
 			if ( game.moveType == true ) {
 				move( game, moves );
 				switchTurn( game );
+
+				moves = [];
+				plausibleMoves = [];
 				click = 0;
 			} else {
 				plausibleMoves = calculateMoves( game, moves );

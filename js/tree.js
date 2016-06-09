@@ -1,9 +1,11 @@
 // constructor
+var cnt_id = 0;
 function tree( square ) {
 
 	this.parent = null;
 	this.root = this;
 	this.child = [];
+	this.id = cnt_id++;
 
 	this.square = square;
 	this.removed = false;
@@ -16,7 +18,7 @@ function add ( parent, node, prob = 0.5 ) {
 		return parent;
 	}
 
-	parent.child[ node ] = {
+	parent.child[ node.id ] = {
 		node: node,
 		prob: (function( node, begin ) {
 			var ans = 1.0;
@@ -61,9 +63,9 @@ function erase ( node ) {
 			break;
 		}		
 
-		const changing_factor = 1.0 / ( 1.0 - parent.child[ node ].prob );
+		const changing_factor = 1.0 / ( 1.0 - parent.child[ node.id ].prob );
 
-		delete parent.child[ node ];
+		delete parent.child[ node.id ];
 
 		for ( var key in parent.child ) {
 			parent.child[ key ].prob *= changing_factor;

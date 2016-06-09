@@ -162,13 +162,25 @@ function move ( game, moves ) {
 
 	const type = old_square.type;
 
-	if ( 2 <= moves.length && moves.length <= 3 ) {
-		const prob = ( moves.length == 2 ? 1.0 : 0.5 );
+	if ( moves.length == 2 ) {
+		const prob = 1.0;
+		
+		for ( var key in old_square.data ) {
+			var node = old_square.data[key];
+			node.square = new_square;
+			new_square.data.push( node );
+		}
+		if ( new_square.data.length > old_square.data.length ) {
+			observeSquare ( game, new_square );
+		}
+	}
+	if ( moves.length == 3 ) {
+		const prob = 0.5;
 
 		for ( var key in old_square.data ) {
-			var data = old_square.data[key];
+			var node = old_square.data[key];
 			const new_node = new tree( new_square );
-			add ( data, new_node, prob );
+			add ( node, new_node, prob );
 			new_square.data.push( new_node );
 		}
 		if ( new_square.data.length > old_square.data.length ) {
