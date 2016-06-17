@@ -1,14 +1,15 @@
 // constructor
-var cnt_id = 0;
 function tree( square ) {
 
 	this.parent = null;
 	this.root = this;
 	this.child = [];
-	this.id = cnt_id++;
 
 	this.square = square;
 	this.removed = false;
+
+	this.entanglementT = [];
+	this.entanglementF = [];
 }
 
 // add new edge
@@ -18,7 +19,7 @@ function add ( parent, node, prob = 0.5 ) {
 		return parent;
 	}
 
-	parent.child[ node.id ] = {
+	parent.child.push ({
 		node: node,
 		prob: (function( node, begin ) {
 			var ans = 1.0;
@@ -28,7 +29,7 @@ function add ( parent, node, prob = 0.5 ) {
 			}
 			return ans;
 		}) ( parent, true ) * prob
-	};
+	});
 	
 	node.parent = parent;
 	node.root = parent.root;
@@ -54,8 +55,18 @@ function erase ( node ) {
 	}
 
 	node.removed = true;
+	
+	if ( node.child.length > 0 ) {
+		node.child [ node.child.length - 1 ].prob += 1.0 - ( function ( edges ) { 
+			var sum = 0.0;
+			for ( var key in edges ) {
+				sum += edges[ key ].prob;
+			}
+			return sum;
+		})( node.child );
+	}
 
-	do {
+	while ( node.child.length == 0 ) {
 
 		var parent = node.parent;
 
@@ -63,16 +74,19 @@ function erase ( node ) {
 			break;
 		}		
 
-		const changing_factor = 1.0 / ( 1.0 - parent.child[ node.id ].prob );
+		if ( !parent.remove ) {
+			const idx = parent.child.indexOf( node );
+			const changing_factor = 1.0 / ( 1.0 - parent.child[ idx ].prob );
 
-		delete parent.child[ node.id ];
+			delete parent.child[ idx ];
 
-		for ( var key in parent.child ) {
-			parent.child[ key ].prob *= changing_factor;
+			for ( var key in parent.child ) {
+				parent.child[ key ].prob *= changing_factor;
+			}
 		}
 
 		node = parent;
-	} while ( node != null && node.removed && node.child.length == 0 );
+	}
 
 }
 

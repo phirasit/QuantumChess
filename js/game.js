@@ -79,37 +79,42 @@ function checkTurn ( game, data ) {
 }
 
 // check whether two points are reachable with the given piece of chess
-function reach( game, type, pos1, pos2, pos3 = -1 ) {
+function reach( game, type, pos1, pos2 ) {
 
-	if ( pos1.x == pos2.x && pos1.y == pos2.y ) {
-		return false;
-	}
-	if ( pos1.x == pos3.x && pos1.y == pos3.y ) {
-		return false;
-	}
-
-	if ( pos3 == -1 ) {
-		switch ( type[0] ) {
-			case 'R': case 'r':
-				return pos1.x == pos2.x || pos1.y == pos2.y;
-			// case 'K': case 'k':
-				// return 
-			case 'b': case 'B':
-				return pos1.x + pos1.y == pos2.x + pos2.y || pos1.x - pos1.y == pos2.x - pos2.y;
-			case 'k': case 'K':
+	switch ( type[0] ) {
+		case 'R': case 'r': // rook 
+			return pos1.x == pos2.x || pos1.y == pos2.y;
+		case 'b': case 'B': // bishop
+			return pos1.x + pos1.y == pos2.x + pos2.y || pos1.x - pos1.y == pos2.x - pos2.y;
+		case 'k' : case 'K':
+			if ( type[1] == 'I' || type[1] == 'i') { // king
 				return Math.max( Math.abs( pos1.x - pos2.x ), Math.abs( pos1.y - pos2.y ) ) == 1;
-		}
-	} else {
-		switch ( type[0] ) {
-			case 'R': case 'r':
-				return pos1.x == pos2.x || pos1.y == pos2.y;
-			// case 'K': case 'k':
-				// return 
-			case 'b': case 'B':
-				return pos1.x + pos1.y == pos2.x + pos2.y || pos1.x - pos1.y == pos2.x - pos2.y;
-			case 'k': case 'K':
-				return Math.max( Math.abs( pos1.x - pos2.x ), Math.abs( pos1.y - pos2.y ) ) <= 1;
-		}		
+			} else if ( type[1] == 'N' || type[1] == 'n' ) { // knight
+				console.log( )
+				return Math.abs( pos1.x - pos2.x ) * Math.abs( pos1.y - pos2.y ) == 2;
+			} else { 
+				return false;
+			}
+		case 'q': case 'Q': // queen
+			var rook = pos1.x == pos2.x || pos1.y == pos2.y;
+			var bishop =  pos1.x + pos1.y == pos2.x + pos2.y || pos1.x - pos1.y == pos2.x - pos2.y;
+			return rook || bishop;
+		case 'p': // pawn
+			if ( Math.abs( pos1.y - pos2.y ) == 1 && pos1.x + 1 == pos2.x ) {
+				return getSquare( game.name, pos1.x, pos1.y ).type != "";
+			}
+			if ( pos2.x == 7 ) {
+				return pos1.y == pos2.y && ( pos1.x == 5  || pos1.x == 6 ); 
+			}
+			return pos1.y == pos2.y && ( pos1.x + 1 == pos2.x ); 
+		case 'P': // Pawn
+			if ( Math.abs( pos1.y - pos2.y ) == 1 && pos1.x - 1 == pos2.x ) {
+				return getSquare( game.name, pos1.x, pos1.y ).type != "";
+			}
+			if ( pos2.x == 2 ) {
+				return pos1.y == pos2.y && ( pos1.x == 3  || pos1.x == 4 ); 
+			}
+			return pos1.y == pos2.y && ( pos1.x - 1 == pos2.x ); 
 	}
 
 	return true;
@@ -129,14 +134,8 @@ function calculateMoves ( game, moves ) {
 
 			const square = getSquare( game.name, i, j );
 			
-			if ( moves.length == 1 ) {
-				if ( reach( game, type, getPosition ( square ), getPosition( moves[0] ) ) ) {
-					valid_moves.push( square );
-				}
-			} else {
-				if ( reach( game, type, getPosition ( square ), getPosition( moves[1] ), getPosition( moves[0] ) ) ) {
-					valid_moves.push( square );
-				}				
+			if ( reach( game, type, getPosition ( square ), getPosition( moves[ moves.length - 1 ] ) ) ) {
+				valid_moves.push( square );
 			}
 		}
 	}
@@ -162,30 +161,29 @@ function move ( game, moves ) {
 
 	const type = old_square.type;
 
-	if ( moves.length == 2 ) {
-		const prob = 1.0;
-		
-		for ( var key in old_square.data ) {
-			var node = old_square.data[key];
-			node.square = new_square;
-			new_square.data.push( node );
-		}
-		if ( new_square.data.length > old_square.data.length ) {
-			observeSquare ( game, new_square );
-		}
+	const prob = ( moves.length == 2 ? 1.0 : 0.5 );
+	
+	const pos1 = getPosition ( moves[0] ), pos2 = getPosition ( moves[1] ), pos3 = getPosition( moves[2] );
+	switch ( type[0] ) {
+		case 'R': case 'r': // rook 
+			var i, j;
+			
+		case 'b': case 'B': // bishop
+		case 'q': case 'Q': // queen
+		case 'p': case 'P' : case 'k': case 'K': // pawn, knight, king
+			if ( moves.length == 3 ) {
+				prob *= 1.0 - moves[1].prob;
+			}
+			break;
 	}
-	if ( moves.length == 3 ) {
-		const prob = 0.5;
 
-		for ( var key in old_square.data ) {
-			var node = old_square.data[key];
-			const new_node = new tree( new_square );
-			add ( node, new_node, prob );
-			new_square.data.push( new_node );
-		}
-		if ( new_square.data.length > old_square.data.length ) {
-			observeSquare ( game, new_square );
-		}
+	for ( var key in old_square.data ) {
+		var node = old_square.data[key];
+		node.square = new_square;
+		new_square.data.push( node );
+	}
+	if ( new_square.type != "" && new_square.type != old_square.type ) {
+		observeSquare ( game, new_square );
 	}
 }
 

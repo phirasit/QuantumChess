@@ -126,7 +126,7 @@ function display( game ) {
 			square.innerText = "";
 
 			square.data = [];
-			square.type = " ";
+			square.type = "";
 			square.prob = 0.0;
 		}
 	}
